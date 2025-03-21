@@ -107,11 +107,16 @@ app.post('/forgot', async (req, resp) => {
                     pass: 'fzovuijoolwxgbsq'
                 }
             });
-            const info = await transporter.sendMail(details, (error, response) => {
+            const info = transporter.sendMail(details, async (error, response) => {
                 if (error) {
                     resp.send({ status: false, message: 'some error found! ' })
                 }
                 else {
+                     await User.findOneAndUpdate({_id:user._id},{
+                        $set:{
+                            otp:otp
+                        }
+                     })
                     resp.send({ status: true, message: 'OTP send in your email', data: info })
                 }
             })
